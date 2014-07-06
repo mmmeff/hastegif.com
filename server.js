@@ -1,3 +1,4 @@
+var config = require('config');
 var express = require('express');
 var request = require('request');
 var cache = require('memory-cache');
@@ -51,6 +52,6 @@ sendImage = function (url, res) {
   request.get(url).pipe(res);
 };
 
-var server = app.listen(3000, function() {
+var server = app.listen(config.port, function() {
   console.log('Listening on port %d', server.address().port);
 });
