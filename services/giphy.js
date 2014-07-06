@@ -33,5 +33,16 @@ var top = function (query, cb) {
   });
 };
 
+var random = function (query, cb) {
+  search(query, function (results) {
+    cb(
+      (results.length > 0)
+      ? results[Math.floor(Math.random() * (results.length))]
+      : null
+    );
+  });
+};
+
 exports.search = search;
 exports.top = top;
+exports.random = random;

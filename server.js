@@ -22,6 +22,12 @@ app.get('/top/:query', function (req, res) {
   });
 });
 
+app.get('/random/:query', function (req, res) {
+  giphy.random(req.param('query'), function (result) {
+    request.get(result.images.original.url).pipe(res);
+  });
+});
+
 var server = app.listen(config.port, function() {
   console.log('Listening on port %d', server.address().port);
 });
