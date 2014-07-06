@@ -12,7 +12,7 @@ var _buildQueryString = function (parts) {
   return buffer;
 };
 
-exports.search = function (query, cb) {
+var search = function (query, cb) {
   var url;
   url = apiUrl + 'search' + _buildQueryString(['q=' + query]);
 
@@ -26,3 +26,12 @@ exports.search = function (query, cb) {
     });
   }
 };
+
+var top = function (query, cb) {
+  search(query, function (results) {
+    cb((results.length > 0) ? results[0] : null);
+  });
+};
+
+exports.search = search;
+exports.top = top;

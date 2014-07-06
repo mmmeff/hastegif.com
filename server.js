@@ -16,6 +16,12 @@ app.get('/:query', function (req, res) {
   });
 });
 
+app.get('/top/:query', function (req, res) {
+  giphy.top(req.param('query'), function (result) {
+    request.get(result.images.original.url).pipe(res);
+  });
+});
+
 var server = app.listen(config.port, function() {
   console.log('Listening on port %d', server.address().port);
 });
