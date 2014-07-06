@@ -2,7 +2,6 @@ var config = require('config');
 var express = require('express');
 var request = require('request');
 var cache = require('memory-cache');
-
 var giphy = require('./services/giphy');
 
 var app = express();

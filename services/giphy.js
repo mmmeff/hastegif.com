@@ -1,7 +1,9 @@
 var request = require('request');
+var cache = require('memory-cache');
 
 var apiKey = 'dc6zaTOxFJmzC'; // global key for API beta
 var apiUrl = 'http://api.giphy.com/v1/gifs/';
+var cacheLife = 1000 * 60 * 10; // 10 minutes
 
 var _buildQueryString = function (parts) {
   var buffer = '?';
@@ -14,7 +16,13 @@ exports.search = function (query, cb) {
   var url;
   url = apiUrl + 'search' + _buildQueryString(['q=' + query]);
 
-  request(url, function (err, resp, body) {
-    cb(JSON.parse(body).data);
-  });
+  if (cache.get(url)) {
+    cb(cache.get(url));
+  } else {
+    request(url, function (err, resp, body) {
+      var results = JSON.parse(body).data;
+      cache.put(url, results, cacheLife);
+      cb(results);
+    });
+  }
 };
