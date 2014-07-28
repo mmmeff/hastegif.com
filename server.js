@@ -14,7 +14,7 @@ app.get('/404.gif', function (req, res) {
   res.sendfile(__dirname + '/static/images/404.gif');
 });
 
-app.get('/:query.:format?', function (req, res) {
+app.get('/:query:format(.gif)?', function (req, res) {
   var q;
   q = req.param('query');
 
