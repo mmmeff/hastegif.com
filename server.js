@@ -7,7 +7,7 @@ var giphy = require('./services/giphy');
 var app = express();
 
 app.get('/', function (req, res) {
-  res.send('hello! Try hitting /query');
+  res.send('hello! Try hitting /:query, /top/:query. or /random/:query');
 });
 
 app.get('/:query', function (req, res) {
