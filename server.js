@@ -1,32 +1,38 @@
 var config = require('config');
 var express = require('express');
 var request = require('request');
-var cache = require('memory-cache');
 var giphy = require('./services/giphy');
+var gifme = require('./services/gifme');
 
 var app = express();
 
 app.get('/', function (req, res) {
-  res.send('hello! Try hitting /:query, /top/:query. or /random/:query');
+  res.send('hello! Try hitting /:query to see the top gif online for that query. Front end coming soon');
+});
+
+app.get('/404', function (req, res) {
+  res.sendfile(__dirname + '/static/images/404.gif');
 });
 
 app.get('/:query', function (req, res) {
-  giphy.search(req.param('query'), function (results) {
-    request.get(results[0].images.original.url).pipe(res);
+  var q;
+  q = req.param('query');
+  giphy.top(q, function (giphyTopHit) {
+    if (typeof giphyTopHit !== 'undefined') {
+      request.get(giphyTopHit.images.original.url).pipe(res);
+    } else { // got nothing from giphy - let's try gifme
+      gifme.top(q, function (gifmeTopHit) {
+        if (typeof gifmeTopHit !== 'undefined') {
+          request.get(gifmeTopHit.link).pipe(res);
+        } else {
+          // give up, fallback to nothing found image
+          res.redirect('/404');
+        }
+      });
+    }
   });
 });
 
-app.get('/top/:query', function (req, res) {
-  giphy.top(req.param('query'), function (result) {
-    request.get(result.images.original.url).pipe(res);
-  });
-});
-
-app.get('/random/:query', function (req, res) {
-  giphy.random(req.param('query'), function (result) {
-    request.get(result.images.original.url).pipe(res);
-  });
-});
 
 var server = app.listen(config.port, function() {
   console.log('Listening on port %d', server.address().port);
